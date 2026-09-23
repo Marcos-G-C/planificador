@@ -1,15 +1,36 @@
-import dayjs from "dayjs";
+import confetti from 'canvas-confetti'
+import { calcularPeso, formatearFecha } from './utils.js'
+import './style.css'
+import.meta.env.VITE_VERSION
 
-const boton = document.getElementById("añadir");
-const input = document.getElementById("texto");
-const lista = document.getElementById("lista");
+const boton = document.getElementById('añadir')
+const input = document.getElementById('texto')
+const inputMin = document.getElementById('min')
+const lista = document.getElementById('lista')
 
-boton.addEventListener("click", guardarPlan);
+boton.addEventListener('click', (e) => guardarPlan(e))
 
-function guardarPlan() {
-    const fechaHoy = dayjs().format("DD/MM/YYYY HH:mm");
-    const li = document.createElement("li");
-    li .textContent = input.value + " - " + fechaHoy;
-    lista.appendChild(li);
-    input.value = "";
+function guardarPlan(e) {
+  e.preventDefault()
+  const minutos = inputMin.value
+  if (!minutos) return
+  if (!input.value) return
+  let peso = calcularPeso(minutos)
+
+  const fechaHoy = formatearFecha(new Date())
+  const li = document.createElement('li')
+  li.textContent =
+    input.value + ' - ' + fechaHoy + ' - ' + minutos + ' (' + peso + ')'
+  lista.appendChild(li)
+  input.value = ''
+  inputMin.value = ''
+  confetti({
+    particleCount: 100,
+    startVelocity: 30,
+    spread: 360,
+    origin: {
+      x: Math.random(),
+      y: Math.random() - 0.2,
+    },
+  })
 }
